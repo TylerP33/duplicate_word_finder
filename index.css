@@ -1,0 +1,30 @@
+html{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+#container{
+
+}
+
+span{
+  border-radius: 5%;
+}
+
+#wordBank{
+  justify-content: left;
+  border: solid black 2px;
+  height: 200px;
+  font-size: 25px;
+}
+
+#textEditor{
+  border: solid black 2px;
+  width: 1000px;
+  height: 500px;
+  font-size: 25px;
+}

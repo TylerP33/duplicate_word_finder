@@ -13,6 +13,7 @@ html{
 
 span{
   border-radius: 5%;
+  overflow-wrap: break-word;
 }
 
 #wordBank{

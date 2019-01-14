@@ -12,9 +12,14 @@ html{
 }
 
 span{
-  border-radius: 5%;
-  overflow-wrap: break-word;
+    display: inline-block;
+    white-space: normal;
 }
+
+#lol{
+ 
+}
+
 
 #wordBank{
   justify-content: left;

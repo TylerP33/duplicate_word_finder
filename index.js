@@ -23,7 +23,7 @@ $(document).ready(function() {
 	 }
 
 	const gatherInput = (callback) => {
-		editor.on('input', function(){
+		editor.on('input paste', function(){
 			if (!editor.html().includes("nbsp")){
 				input.push(editor.html().replace(/[\/#!$%\^&.\,?*;:{}=\-_`~()]/g,"").toLowerCase())
 			}
@@ -39,10 +39,57 @@ $(document).ready(function() {
 
 	}
 
+	const hsvToRgb = (h, s, v) => {
+  		var chroma = s * v / 10000,
+      	min = v / 100 - chroma,
+      	hdash = h / 60,
+      	x = chroma * (1 - Math.abs(hdash % 2 - 1)),
+      	r = 0, g = 0, b = 0;
+
+ 		switch(true){
+    		case hdash < 1:
+      		r = chroma;
+      		g = x;
+      		break;
+    	case hdash < 2:
+      		r = x;
+      		g = chroma;
+      		break;
+    	case hdash < 3:
+      		g = chroma;
+      		b = x;
+      		break;
+    	case hdash < 4:
+      		g = x;
+      		b = chroma;
+      		break;
+    	case hdash < 5:
+      		r = x;
+      		b = chroma;
+      		break;
+    	case hdash <= 6:
+      		r = chroma;
+      		b = x;
+      		break;
+  	}
+
+  		r += min;
+  		g += min;
+  		b += min;
+  		return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	}
+
+	function randomColor(){
+  		let golden_ratio_conjugate = 0.618033988749895,
+      	h = (Math.random() + golden_ratio_conjugate) % 1 *360,
+      	rgb = hsvToRgb(h, 50, 95);
+  			return "rgb("+rgb[0]+","+rgb[1]+","+rgb[2]+")";
+	}
+
 	const appendDuplicate = () => {
 		let color =  "#" + Math.random().toString(16).slice(2, 8);
 		let appendedWord = wordBank.filter( function( item, index, inputArray ) {return inputArray.indexOf(item) == index; })
-		let spanColor = ' <span style=background-color:' + color + '>' + "\n" + appendedWord[appendedWord.length - 1] + "</span>"
+		let spanColor = ' <span style=background-color:' + randomColor() + '>' + "\n" + appendedWord[appendedWord.length - 1] + "</span>"
 		var match = new RegExp(appendedWord[appendedWord.length - 1], 'ig')
 			if 	(!$("#wordBank").html().includes(appendedWord[appendedWord.length - 1])) {
 					$("#wordBank").append(spanColor)
@@ -77,6 +124,5 @@ $(document).ready(function() {
 	}
 
 	gatherInput(appendDuplicate)
-	removeBr()
 });
 

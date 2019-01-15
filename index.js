@@ -1,8 +1,9 @@
 $(document).ready(function() {
 	let editor = $('#textEditor')
-	editor.attr('contenteditable','true');
 	let input = []
 	let wordBank = []
+	let sortedInput;
+	editor.attr('contenteditable','true');
 
 	const placeCaretAtEnd = (el) => {
     	el.focus();
@@ -23,16 +24,14 @@ $(document).ready(function() {
 
 	const gatherInput = (callback) => {
 		editor.on('input', function(){
-			$('.anchor').closest('div').css('background-color', 'red');
 			if (!editor.html().includes("nbsp")){
 				input.push(editor.html().replace(/[\/#!$%\^&.\,?*;:{}=\-_`~()]/g,"").toLowerCase())
 			}
 
-			let last = input[input.length - 1].split(" ").sort()
-			for(let i = 0; i <= last.length; i++){
-				if (last[i] === last[i + 1] && last[i] !== undefined && !wordBank.includes(last[i]) && !last[i].includes(`style"`)){
-					wordBank.push(last[i])
-					console.log(wordBank)
+			sortedInput = input[input.length - 1].split(" ").sort()
+			for(let i = 0; i <= sortedInput.length; i++){
+				if (sortedInput[i] === sortedInput[i + 1] && sortedInput[i] !== undefined && !wordBank.includes(sortedInput[i]) && !sortedInput[i].includes(`style"`)){
+					wordBank.push(sortedInput[i])
 					callback()
 				}
 			}	
@@ -41,17 +40,17 @@ $(document).ready(function() {
 	}
 
 	const appendDuplicate = () => {
-		let appendedWord = wordBank.filter( function( item, index, inputArray ) {return inputArray.indexOf(item) == index; })
 		let color =  "#" + Math.random().toString(16).slice(2, 8);
+		let appendedWord = wordBank.filter( function( item, index, inputArray ) {return inputArray.indexOf(item) == index; })
+		let spanColor = ' <span style=background-color:' + color + '>' + "\n" + appendedWord[appendedWord.length - 1] + "</span>"
+		var match = new RegExp(appendedWord[appendedWord.length - 1], 'ig')
 			if 	(!$("#wordBank").html().includes(appendedWord[appendedWord.length - 1])) {
-					$("#wordBank").append(' <span style=background-color:' + color + '>' + "\n" + appendedWord[appendedWord.length - 1] + "</span>")
-					var match = new RegExp(appendedWord[appendedWord.length - 1], 'g')
-					let addColor = editor.html().replace(match, '<span style=background-color:' + color + '>' + "\n" + appendedWord[appendedWord.length - 1] + "</span>")
+					$("#wordBank").append(spanColor)
+					let addColor = editor.html().replace(match, spanColor)
 					editor.html(addColor)
 					editor[0].appendChild(document.createTextNode( '\uFEFF' ));
 					placeCaretAtEnd(editor.get(0));
-			}
-			
+			} 
 	}
 
 	const removeSpanOnDelete = () => {
@@ -64,7 +63,7 @@ $(document).ready(function() {
             		if (r.startOffset == r.endOffset && r.endOffset == el.textContent.length) {
                 		event.preventDefault();
                 if (el.classList.contains('highlight')) {
-                    el.remove();
+                    	el.remove();
                         editor.html("")
                 	} else {
                     	el.classList.add('highlight');
@@ -78,6 +77,6 @@ $(document).ready(function() {
 	}
 
 	gatherInput(appendDuplicate)
-
+	removeBr()
 });
 
